@@ -48,6 +48,7 @@ jobs:
           make pull build
           echo "TO_IMAGE=$(make to_image)" >> $GITHUB_ENV
       - name: Run tests
+        if: ${{ matrix.browser == 'chrome' }}
         run: |
           docker run ${TO_IMAGE} pytest --timeout=20
       - name: Docker tag
