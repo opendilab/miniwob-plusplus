@@ -4,8 +4,8 @@ wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.de
   rm -rf ./google-chrome-stable_current_amd64.deb
 
 # install chrome webdriver
-wget -qO /tmp/chromedriver.zip "http://chromedriver.storage.googleapis.com/$(wget -qO- chromedriver.storage.googleapis.com/LATEST_RELEASE)/chromedriver_linux64.zip" &&
-  unzip -qq /tmp/chromedriver.zip chromedriver -d /usr/local/bin/ &&
-  rm -rf /tmp/chromedriver.zip &&
+pip install hf-webdriver-manager &&
+  WEBDRIVER=$(python -c 'from webdriver_manager.chrome import ChromeDriverManager as DriverManager;print(DriverManager().install());') &&
+  cp "${WEBDRIVER}" /usr/local/bin &&
   chromedriver --help &&
   chromedriver --version
