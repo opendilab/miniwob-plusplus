@@ -15,9 +15,6 @@ ADD installs/${BROWSER}.sh browser_install.sh
 RUN \
     chmod +x ./browser_install.sh && \
     ./browser_install.sh
-RUN \
-    pip install pybrowsers && \
-    BROWSER=${BROWSER} python -c 'import browsers, os;print(browsers.get(os.environ["BROWSER"]));'
 
 RUN \
     echo "bingo!"
