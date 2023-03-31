@@ -31,6 +31,8 @@ jobs:
           - '3.8'
         browser:
           - chrome
+          - edge
+
     steps:
       - uses: actions/checkout@v2
       - name: Get date
