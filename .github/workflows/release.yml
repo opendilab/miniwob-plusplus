@@ -1,29 +1,12 @@
 name: build
 on:
-  pull_request:
-  push:
+  workflow_dispatch:
 
 permissions:
   contents: read # to fetch code (actions/checkout)
 
 jobs:
-  build_origin:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    strategy:
-      matrix:
-        python-version:
-          - '3.8'
-    steps:
-      - uses: actions/checkout@v2
-      - run: |
-          docker build -f py.Dockerfile \
-            --build-arg PYTHON_VERSION=${{ matrix.python-version }} \
-            --tag miniwob-plusplus-docker .
-      - name: Run tests
-        run: docker run miniwob-plusplus-docker pytest --timeout=20
-
-  build_ding:
+  build_ding_and_release:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,6 +14,7 @@ jobs:
           - '3.8'
         browser:
           - chrome
+
     steps:
       - uses: actions/checkout@v2
       - name: Get date
@@ -48,11 +32,13 @@ jobs:
       - name: Run tests
         run: |
           docker run ${TO_IMAGE} pytest --timeout=20
-      - name: Docker tag
+      - name: Docker login
+        run: |
+          docker login --username ${{ secrets.DOCKERIO_USERNAME }} --password ${{ secrets.DOCKERIO_PASSWORD }}
+      - name: Docker push
         env:
           TO_LATEST_IMAGE: opendilab/miniwob-plusplus-${{ matrix.browser }}:latest
         run: |
+          docker push ${TO_IMAGE}
           docker tag ${TO_IMAGE} ${TO_LATEST_IMAGE}
-      - name: See what you have built
-        run: |
-          docker images
+          docker push ${TO_LATEST_IMAGE}
