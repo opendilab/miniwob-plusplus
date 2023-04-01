@@ -1,4 +1,4 @@
-name: build
+name: Publish Image
 on:
   workflow_dispatch:
 
